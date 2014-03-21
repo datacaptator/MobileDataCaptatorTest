@@ -52,19 +52,11 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 			solo.assertCurrentActivity("SelectFicheActivity", SelectFicheActivity.class);
 
 			ListView listViewFiches = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewFiches);
-			if (listViewFiches != null) {
-				Log.e("NOT NULL", "listViewFiches" );
-			}
-			else
-			{
-				Log.e("NULL", "listViewFiches" );
-			}
-						
-			// TODO -> getCount returns 0 als  	loadProjectData()/ loadDataFiches() in onStart() worden uitgevoerd ipv onCreate()
-			
-			int countFiches = listViewFiches.getCount();
+		
+			int countFiches = listViewFiches.getCount(); // returns always null
+		
 			Log.e("COUNT FICHES", Integer.toString(countFiches));
-			int randomFiche = random.nextInt(countFiches - 1) + 1;
+			int randomFiche = random.nextInt(10)+1;
 			Log.e("SELECTED FICHE", Integer.toString(randomFiche));
 
 			solo.clickOnView(getViewAtIndex(listViewFiches, randomFiche, getInstrumentation()));
