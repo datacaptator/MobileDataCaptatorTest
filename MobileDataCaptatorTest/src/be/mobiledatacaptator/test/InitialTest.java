@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import be.mobiledatacaptator.activities.DisplayPhotoActivity;
 import be.mobiledatacaptator.activities.SelectFicheActivity;
 import be.mobiledatacaptator.activities.SelectProjectActivity;
 import be.mobiledatacaptator.activities.TakePhotoActivity;
@@ -37,50 +38,90 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 
 		do {
 			again = false;
-			
-			//SelectProjectActivity
+
+			// SelectProjectActivity
 			solo.assertCurrentActivity("SelectProjectActivity", SelectProjectActivity.class);
 			ListView listViewProjects = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewProjects);
 			int countProjects = listViewProjects.getCount();
-			int randomProject = random.nextInt(countProjects - 1) + 1;
+			int randomProject = random.nextInt(countProjects) + 1;
 			Log.e("SELECTED PROJECT", Integer.toString(randomProject));
 			solo.clickInList(randomProject);
-			solo.clickOnButton("Open project");
+			solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_open_project));
 
-			
-			//SelectFicheActivity			
+			// SelectFicheActivity
 			solo.assertCurrentActivity("SelectFicheActivity", SelectFicheActivity.class);
 			ListView listViewFiches = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewFiches);
-			int countFiches = listViewFiches.getCount(); // returns always null
-		
+			int countFiches = listViewFiches.getCount(); 
+
 			Log.e("COUNT FICHES", Integer.toString(countFiches));
-			int randomFiche = random.nextInt(countFiches)+1;
+			int randomFiche = random.nextInt(countFiches);
 			Log.e("SELECTED FICHE", Integer.toString(randomFiche));
 
 			solo.clickOnView(getViewAtIndex(listViewFiches, randomFiche, getInstrumentation()));
-			
+
 			UnitOfWork unitOfWork = UnitOfWork.getInstance();
 			Project project = unitOfWork.getActiveProject();
-			
+
 			if (project.isLoadPhotoActivity() != true) {
 				Log.e("PROJECT - no photos", project.getName());
 				again = true;
 				solo.goBack();
-			}
-			else{
+			} else {
 				Log.e("PROJECT - photos", project.getName());
+
+				solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_open_photo));
+				solo.assertCurrentActivity("TakePhotoActivity", TakePhotoActivity.class);
+
+//				int randomButton = random.nextInt(3) + 1;
+				
+				int randomButton = 1;
+
+				switch (randomButton) {
+				case 1: // open photo
+					ListView listViewPhotos = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewPhotos);
+					int countPhotos = listViewPhotos.getCount();
+					if (countPhotos > 0) {
+						Log.e("COUNT PHOTOS", Integer.toString(countPhotos));
+						int randomPhoto = random.nextInt(countPhotos);
+						
+						solo.clickOnView(getViewAtIndex(listViewPhotos, randomPhoto, getInstrumentation()));
+						solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_display_photo));
+						solo.assertCurrentActivity("DisplayPhotoActivity", DisplayPhotoActivity.class);
+						
+					}
+					else
+					{
+						again = true;
+					}
+					
+					break;
+				case 2: // delete photo
+
+					break;
+
+				case 3: // click on take photo - photo category
+					if (project.getPhotoCategories().size() > 0) {
+						int randomCategory = random.nextInt(project.getPhotoCategories().size());
+						String categoryName = project.getPhotoCategories().get(randomCategory).getName();
+
+						solo.clickOnButton(categoryName);
+					}
+					break;
+
+				case 4: // free suffix
+
+					break;
+
+				default:
+					break;
+				}
+
 			}
 
 		} while (again == true);
-				
-		solo.clickOnButton("Open Foto");
-
-		solo.assertCurrentActivity("TakeProjectActivity", TakePhotoActivity.class);
-		solo.clickOnButton("Omgevingsfoto");
 
 	}
 
-	
 	// /////////////////////////////////////////////////////////////////////////////////////
 	// Helper functions to select item in listview not visible on screen
 	public View getViewAtIndex(final ListView listElement, final int indexInList, Instrumentation instrumentation) {
