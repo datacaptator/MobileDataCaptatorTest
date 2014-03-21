@@ -38,29 +38,27 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 		do {
 			again = false;
 			
+			//SelectProjectActivity
 			solo.assertCurrentActivity("SelectProjectActivity", SelectProjectActivity.class);
-
 			ListView listViewProjects = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewProjects);
 			int countProjects = listViewProjects.getCount();
-			Log.e("COUNT PROJECTS", Integer.toString(countProjects));
 			int randomProject = random.nextInt(countProjects - 1) + 1;
 			Log.e("SELECTED PROJECT", Integer.toString(randomProject));
 			solo.clickInList(randomProject);
-
 			solo.clickOnButton("Open project");
 
+			
+			//SelectFicheActivity			
 			solo.assertCurrentActivity("SelectFicheActivity", SelectFicheActivity.class);
-
 			ListView listViewFiches = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewFiches);
-		
 			int countFiches = listViewFiches.getCount(); // returns always null
 		
 			Log.e("COUNT FICHES", Integer.toString(countFiches));
-			int randomFiche = random.nextInt(10)+1;
+			int randomFiche = random.nextInt(countFiches)+1;
 			Log.e("SELECTED FICHE", Integer.toString(randomFiche));
 
 			solo.clickOnView(getViewAtIndex(listViewFiches, randomFiche, getInstrumentation()));
-
+			
 			UnitOfWork unitOfWork = UnitOfWork.getInstance();
 			Project project = unitOfWork.getActiveProject();
 			
