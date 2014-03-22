@@ -63,7 +63,7 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 			Project project = unitOfWork.getActiveProject();
 
 			if (project.isLoadPhotoActivity() != true) {
-				Log.e("PROJECT - no photos", project.getName());
+				Log.e("PROJECT - No Photos", project.getName());
 				again = true;
 				solo.goBack();
 			} else {
