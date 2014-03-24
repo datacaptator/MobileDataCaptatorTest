@@ -51,7 +51,7 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 			// SelectFicheActivity
 			solo.assertCurrentActivity("SelectFicheActivity", SelectFicheActivity.class);
 			ListView listViewFiches = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewFiches);
-			int countFiches = listViewFiches.getCount(); 
+			int countFiches = listViewFiches.getCount();
 
 			Log.e("COUNT FICHES", Integer.toString(countFiches));
 			int randomFiche = random.nextInt(countFiches);
@@ -72,30 +72,68 @@ public class InitialTest extends ActivityInstrumentationTestCase2<SelectProjectA
 				solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_open_photo));
 				solo.assertCurrentActivity("TakePhotoActivity", TakePhotoActivity.class);
 
-//				int randomButton = random.nextInt(3) + 1;
-				
-				int randomButton = 1;
+				ListView listViewPhotos = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewPhotos);
+				int countPhotos = listViewPhotos.getCount();
+
+				int randomButton = random.nextInt(2) + 1;
 
 				switch (randomButton) {
 				case 1: // open photo
-					ListView listViewPhotos = (ListView) solo.getView(be.mobiledatacaptator.R.id.listViewPhotos);
-					int countPhotos = listViewPhotos.getCount();
 					if (countPhotos > 0) {
 						Log.e("COUNT PHOTOS", Integer.toString(countPhotos));
 						int randomPhoto = random.nextInt(countPhotos);
-						
 						solo.clickOnView(getViewAtIndex(listViewPhotos, randomPhoto, getInstrumentation()));
 						solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_display_photo));
 						solo.assertCurrentActivity("DisplayPhotoActivity", DisplayPhotoActivity.class);
-						
-					}
-					else
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+
+						}
+						solo.goBackToActivity("SelectProjectActivity");
+						again = true;
+					} else // no photos for this fiche
 					{
+						solo.goBackToActivity("SelectProjectActivity");
 						again = true;
 					}
-					
+
 					break;
 				case 2: // delete photo
+					if (countPhotos > 0) {
+						Log.e("COUNT PHOTOS", Integer.toString(countPhotos));
+						int randomPhoto = random.nextInt(countPhotos);
+						solo.clickOnView(getViewAtIndex(listViewPhotos, randomPhoto, getInstrumentation()));
+						solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_delete_photo));
+
+						int randomYesNo = random.nextInt(1);
+						if (randomYesNo == 0) {
+							solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_yes));
+						} else {
+							solo.clickOnButton(solo.getString(be.mobiledatacaptator.R.string.button_no));
+						}
+						
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+
+						}
+						solo.goBackToActivity("SelectProjectActivity");
+						again = true;
+					} else // no photos for this fiche
+					{
+						solo.goBackToActivity("SelectProjectActivity");
+						again = true;
+					}
+
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+
+					}
+
+					solo.goBackToActivity("SelectProjectActivity");
+					again = true;
 
 					break;
 
